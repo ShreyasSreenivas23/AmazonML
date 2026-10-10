@@ -1,0 +1,51 @@
+﻿
+# --- dependencies / environments
+node_modules/
+venv/
+.venv/
+venv-*/
+env/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+coverage/
+
+# --- secrets
+.env
+.env.*
+!.env.example
+
+# --- build output / binaries
+dist/
+build/
+target/
+*.exe
+*.o
+
+# --- archives, large data, model weights
+*.zip
+*.7z
+*.rar
+*.pth
+*.pt
+*.sqlite3
+
+# --- OS / editor junk
+.DS_Store
+desktop.ini
+Thumbs.db
+__MACOSX/
+~$*
+*.log
+
+# --- amazon-specific: competition data, outputs, private notes (public repo)
+student_resource/
+output/
+New folder/
+*.tsv
+*.pdf
+*_LINKS.txt
+*COMMAND*.txt

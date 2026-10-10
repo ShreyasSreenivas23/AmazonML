@@ -1,0 +1,35 @@
+# Full GPU environment (RTX 5080 / Blackwell sm_120 needs CUDA 12.8+ wheels).
+#   python -m venv .venv && .venv\Scripts\activate   (WSL/Linux: source .venv/bin/activate)
+#   pip install -r requirements.txt
+# torch 2.8.0 (not newer) on purpose: torch 2.11 DLLs were blocked by Windows Smart App Control on the
+# team GPU box; 2.8.0+cu128 loads and supports sm_120. On WSL2/Linux you may upgrade (keep a cu128+ build).
+--extra-index-url https://download.pytorch.org/whl/cu128
+-r requirements-core.txt
+
+torch==2.8.0+cu128
+torchvision==0.23.0+cu128
+
+# GBDTs (XGBoost device="cuda" and CatBoost task_type="GPU" verified; LightGBM wheel is CPU-only)
+xgboost==3.2.0
+catboost==1.2.10
+optuna==5.0.0
+
+# NLP / CV / multimodal
+transformers==5.17.0
+tokenizers==0.23.2
+accelerate==1.15.0
+peft==0.21.0
+sentence-transformers==6.1.0
+safetensors==0.8.0
+timm==1.0.30
+opencv-python-headless==5.0.0.93
+bitsandbytes==0.50.2   # 8-bit optimizers / QLoRA; verified importable + AdamW8bit on native Windows
+sentencepiece==0.2.2   # DeBERTa-v3 / T5 tokenizers
+protobuf==7.36.2
+jellyfish==1.2.1       # phonetic codes (metaphone), Jaro-Winkler
+
+# EDA
+jupyterlab==4.6.4
+ipykernel==7.3.0
+matplotlib==3.11.2
+tabulate==0.10.0       # markdown tables in EDA reports

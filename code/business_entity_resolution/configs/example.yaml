@@ -1,0 +1,12 @@
+# Template experiment config. Copy to configs/E###-<short-name>.yaml per experiment.
+defaults: base.yaml
+
+exp_id: E000-template
+metric: smape   # template trains a synthetic regression; the real task uses er_f05 (base.yaml)
+owner: ""
+notes: "Synthetic-data smoke test for the training template."
+
+train:
+  epochs: 10
+  batch_size: 256
+  lr: 1.0e-3

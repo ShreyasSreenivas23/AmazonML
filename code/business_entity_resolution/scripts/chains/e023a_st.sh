@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# E023a-ST: E023a-core with the self-trained CE scores on test (runs/E020-ce) instead of plain E016. Train side identical
+# (E020-ce/train_ce is a copy of E016's), so E023a-core's cached train frame is reused. Candidate filter is the same
+# (plain E016 >= 0.01 OR stage-1 >= 0.2) -> identical candidate_pairs.tsv. Ship only if organisers allow self-training.
+set -u
+cd "$(dirname "$0")/../.."
+PY=.venv/Scripts/python.exe
+# 27 Sep 03:25: E023a-core hung in its unseen-variant step after writing every output (fixed in 6bdd28d) and was killed;
+# its outputs were finished from the saved probabilities, marked by runs/E015/sub_E023a_core/RECOVERED.
+until [ -f runs/E023a-core/exit.json ] || [ -f runs/E015/sub_E023a_core/RECOVERED ]; do sleep 60; done
+grep -q '"returncode": 0' runs/E023a-core/exit.json 2>/dev/null || [ -f runs/E015/sub_E023a_core/RECOVERED ]     || { echo "CHAIN STOP: E023a-core failed"; exit 1; }
+mkdir -p runs/frames/E023a_st && cp runs/frames/E023a_core/train_frame.parquet runs/frames/E023a_st/
+$PY -c "import json; k=json.load(open('runs/frames/E023a_core/frames.json')); k['ce_dir']=['runs/E015-ce','runs/E020-ce','runs/E022-llmce']; json.dump(k, open('runs/frames/E023a_st/frames.json','w'))"
+$PY -m monitor.launch --run E023a-st --quiet -- $PY -m src.er_fullpass stage2 --exp E015 --views name addr both both_ft \
+    --ce-dir runs/E015-ce runs/E020-ce runs/E022-llmce --fit-folds 0 --tag E023a_st \
+    --comp-cols cos_name name_ratio name_jw name_full_tset name_tsort --norm2 --comp-keep 0.78 \
+    --prune-eps 0.2 --prune-ce-dir runs/E016-ce --prune-ce 0.01 --unseen-threshold 0.85 \
+    --frames runs/frames/E023a_st --out submissions/sub_E023a_st
+grep -q '"returncode": 0' runs/E023a-st/exit.json || { echo "CHAIN STOP: E023a-st failed"; exit 1; }
+mkdir -p runs/E015/sub_E023a_st && cp runs/E015/stage2.json runs/E015/predict.json runs/E015/test_probs_stage2.parquet runs/E015/sub_E023a_st/
+cmp -s submissions/sub_E023a_core/candidate_pairs.tsv submissions/sub_E023a_st/candidate_pairs.tsv && echo "candidate_pairs identical to E023a-core" || echo "WARNING: candidate_pairs differ from E023a-core"
+echo "E023a-st DONE $(date +%H:%M)"

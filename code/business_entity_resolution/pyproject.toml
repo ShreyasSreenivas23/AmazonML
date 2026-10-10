@@ -1,0 +1,18 @@
+[project]
+name = "amazon-ml-2026"
+version = "0.1.0"
+description = "Team entry for the Amazon ML Challenge 2026"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501", "B905", "UP036"]  # zip strict: py3.10 compat; UP036: explicit version guard in check_env

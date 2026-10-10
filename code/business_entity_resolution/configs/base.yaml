@@ -1,0 +1,32 @@
+# Shared defaults. Experiment configs set `defaults: base.yaml` and override.
+# Paths come from .env (DATA_DIR / RUNS_DIR / OOF_DIR), never from configs.
+
+seed: 42
+metric: er_f05           # macro F0.5 per Source 1 entity (entity resolution)
+
+data:
+  train_file: train.csv  # FILL ON DAY 1 (relative to DATA_DIR)
+  test_file: test.csv
+  sample_submission: sample_submission.csv
+  id_col: id             # FILL ON DAY 1
+  target_col: target     # FILL ON DAY 1
+
+cv:
+  n_splits: 5
+  method: stratified_reg # kfold | stratified | stratified_reg | group | stratified_group | time
+  group_col: null
+  folds_file: folds_s42_k5.csv   # written once to DATA_DIR, shared by ALL models
+
+train:
+  epochs: 3
+  batch_size: 32
+  grad_accum: 1
+  lr: 2.0e-4
+  weight_decay: 0.01
+  precision: bf16
+  num_workers: 12
+  checkpoint_every_steps: 500
+
+monitor:
+  heartbeat_every_steps: 50
+  heartbeat_every_seconds: 30

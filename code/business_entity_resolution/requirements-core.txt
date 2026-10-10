@@ -1,0 +1,22 @@
+# Core deps: everything tests + monitor + submission tooling need. No torch → installs fast anywhere
+# (cloud sessions, CI, CPU laptops). Pinned to versions verified on 2026-09-24.
+# pandas pinned to 2.3.3: pandas 3.0.x DLLs were blocked by Windows Smart App Control (docs/HARDWARE.md).
+numpy==2.4.6
+pandas==2.3.3
+pyarrow==25.0.1
+scikit-learn==1.9.1
+scipy==1.17.1
+PyYAML==6.0.3
+python-dotenv==1.2.3
+rich==15.0.0
+psutil==7.2.2
+nvidia-ml-py==13.610.43
+requests==2.34.2
+tqdm==4.70.1
+# pipeline code imported by tests (cloud workers need these without the GPU stack)
+rapidfuzz==3.14.6
+anyascii==0.3.3
+lightgbm==4.7.0
+pillow==12.3.0
+pytest==9.1.1
+ruff==0.16.8
